@@ -4,10 +4,10 @@ var pfBarChart = {
    * Chart configuration values
    */
   config: {
-    barThickness:   20,  // thickness of individual bars
-    barGutter:      4,   // space between bars
+    barThickness:   25,  // thickness of individual bars
+    barGutter:      8,   // space between bars
     labelWidth:     100, // label width
-    labelBaseline:  16   // label text baseline
+    labelBaseline:  20   // label text baseline
   },
 
   /* ---
@@ -15,65 +15,72 @@ var pfBarChart = {
    */
   display: function(chart) {
     let config = this.config;
+    this.chart = chart;
+
+    this.processChartData();
+
+    // SVG width is the largest value in the dataset.
+    this.width = Math.max(...this.dataset);
+
+    // SVG height is based on n umber of values in dataset.
+    this.height = this.dataset.length * (config.barThickness + config.barGutter);
+
+    // Create the chart.
+    this.createSvg();
+    this.createBars();
+    this.createLabels();
+  },
+
+  /* ---
+   * Helper function to process chart data.
+   */
+  processChartData: function() {
     this.labels = [];
     this.dataset = [];
 
-    for (let value of chart.data.values) {
+    for (let value of this.chart.data.values) {
       this.labels.push(value[0]);
       this.dataset.push(value[1]);
     }
-
-    // SVG width is the largest value in the dataset.
-    let width = Math.max(...this.dataset);
-
-    // SVG height is based on n umber of values in dataset.
-    let height = this.dataset.length * (config.barThickness + config.barGutter);
-
-    // Create the chart.
-    this.svg = this.createSvg({ chart: chart, height: height });
-    let bars = this.createBarChartBars({ width: width });
-    let axis = this.createLabels();
   },
 
   /* ---
    * Helper function that returns the base SVG object
    */
-  createSvg: function(obj) {
-    return d3.select(obj.chart.el).append('svg')
-             .attr('width', '100%')
-             .attr('height', obj.height);
+  createSvg: function() {
+    this.svg = d3.select(this.chart.el).append('svg')
+                 .attr('width', '100%')
+                 .attr('height', this.height);
   },
 
   /* ---
    * Helper function to create bar chart bars
    */
-  createBarChartBars: function(obj) {
-    let bars = this.svg.selectAll('rect').data(this.dataset).enter().append('rect');
-    bars.attr('height', this.config.barThickness)
-        .attr('width',  (d) => { return this.getBarSize(d, obj.width); })
-        .attr('x',      this.config.labelWidth)
-        .attr('y',      (d, i) => { return this.getBarLocation(i); })
-        .attr('fill',   'blue');
-    return bars;
+  createBars: function() {
+    return this.svg.selectAll('rect').data(this.dataset).enter().append('rect')
+                   .attr('height', this.config.barThickness)
+                   .attr('width',  (d) => { return this.getBarSize(d); })
+                   .attr('x',      this.config.labelWidth)
+                   .attr('y',      (d, i) => { return this.getBarLocation(i); })
+                   .attr('fill',   'blue');
   },
 
   /* ---
    * Helper function to create bar chart labels.
    */
-  createLabels: function(obj) {
-    let labels = this.svg.selectAll('text').data(this.labels).enter().append('text');
-    labels.text(function(d) { return d; })
-        .attr('height', this.config.barThickness)
-        .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
-        .attr('fill',   'black');
-    return labels;
+  createLabels: function() {
+    return this.svg.selectAll('text').data(this.labels).enter().append('text')
+                   .text(function(d) { return d; })
+                   .attr('height', this.config.barThickness)
+                   .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
+                   .attr('fill',   'black');
   },
 
   /* ---
    * Helper function that returns the size of the bar based on passed-in data.
    */
-  getBarSize: function(d, width) {
-    return (d / width * 100) + '%';
+  getBarSize: function(d) {
+    return (d / this.width * 100) + '%';
   },
 
   /* ---
