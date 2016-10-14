@@ -52,9 +52,10 @@ var pieFrame = {
   processData: function(chart) {
     switch(chart.type) {
       case 'horizontal-bar':
-        pfBarChart.display(chart);
+        pfBarChart.display(chart, 'horizontal');
         break;
       case 'vertical-bar':
+        pfBarChart.display(chart, 'vertical');
         break;
     }
   }
