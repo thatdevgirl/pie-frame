@@ -52,9 +52,6 @@ var pfBarChart = {
                      .attr('height', this.height);
         break;
       case 'vertical':
-        this.svg = d3.select(this.chart.el).append('svg')
-                     .attr('width', '100%')
-                     .attr('height', this.height);
         break;
     }
 
@@ -73,12 +70,7 @@ var pfBarChart = {
                        .attr('y',      (d, i) => { return this.getBarLocation(i); })
                        .attr('fill',   'blue');
       case 'vertical':
-        return this.svg.selectAll('rect').data(this.dataset).enter().append('rect')
-                       .attr('height', (d) => { return this.getBarSize(d) + '%'; })
-                       .attr('width',  this.config.barThickness)
-                       .attr('x',      (d, i) => { return this.getBarLocation(i); })
-                       .attr('y',      (d) => { return this.getVerticalBarBase(d); })
-                       .attr('fill',   'blue');
+        return false;
     }
   },
 
@@ -104,10 +96,6 @@ var pfBarChart = {
       this.height = this.dataset.length * (this.config.barThickness + this.config.barGutter);
 
     } else if (this.orientation == 'vertical') {
-      // SVG width is based on number of values in dataset.
-      this.width = this.dataset.length * (this.config.barThickness + this.config.barGutter);
-      // SVG height is the largest value in the dataset.
-      this.height = Math.max(...this.dataset) + this.labelHeight;
     }
   },
 
