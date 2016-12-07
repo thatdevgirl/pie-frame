@@ -1,0 +1,20 @@
+{
+  "name": "pie-frame",
+  "version": "1.0.0",
+  "description": "Javascript library that creates responsive charts using D3 based on data from Google Sheets",
+  "author": "Joni Halabi <her@thatdevgirl.com>",
+  "license": "MIT",
+
+  "dependencies": {
+    "gulp": "*",
+    "gulp-concat": "*",
+    "gulp-uglify": "*",
+    "gulp-babel": "*",
+    "gulp-watch": "*",
+    "babel-preset-es2015": "*",
+
+    "jquery": "*",
+    "d3": "*",
+    "randomcolor": "*"
+  }
+}
