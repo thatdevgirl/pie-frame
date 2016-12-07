@@ -15,7 +15,10 @@ var pieFrame = {
       let url   = this.getSheetUrl(chart.id);
 
       $.ajax(url, {
-        success: (data) => { chart.data = data; this.processData(chart); },
+        success: (data) => {
+          chart.data = this.processData(data);
+          this.displayChart(chart);
+        },
         error:   (xhr)  => { console.log(xhr); return false; }
       });
     }
@@ -47,15 +50,33 @@ var pieFrame = {
   },
 
   /* ---
-   * Function that processes the chart data to create the visual chart.
+   * Function that saves out labels and chart data.
    */
-  processData: function(chart) {
+  processData: function(data) {
+    let labels = [], counts = [];
+
+    for (let value of data.values) {
+      labels.push(value[0]);
+      counts.push(value[1]);
+      // TODO: Eventually get dataset to support multiple bars per row.
+    }
+
+    return { 'labels': labels, 'counts': counts };
+  },
+
+  /* ---
+   * Function that calls the correct function to display cart.
+   */
+  displayChart: function(chart) {
     switch(chart.type) {
       case 'horizontal-bar':
         pfBarChart.display(chart, 'horizontal');
         break;
       case 'vertical-bar':
         pfBarChart.display(chart, 'vertical');
+        break;
+      case 'pie':
+        pfPieChart.display(chart);
         break;
     }
   }

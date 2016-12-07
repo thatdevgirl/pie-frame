@@ -7,8 +7,9 @@ var gulp   = require('gulp'),
 
 // Array of JS files, in order by dependency.
 var jsFiles = [
+  'js/src/pieFrame.js',
   'js/src/pfBarChart.js',
-  'js/src/pieFrame.js'
+  'js/src/pfPieChart.js'
  ];
 
 // Task to concatinate and minify JS files.

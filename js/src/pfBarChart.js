@@ -13,32 +13,16 @@ var pfBarChart = {
   },
 
   /* ---
-   * Function that creates a horizontal bar chart from the chartInfo object.
+   * Function that creates a bar chart from the chartInfo object.
    */
   display: function(chart, orientation) {
     this.chart = chart;
     this.orientation = orientation;
 
-    this.processChartData();
     this.getSvgDimensions();
-
-    // Create the chart.
     this.createSvg();
     this.createBars();
     this.createLabels();
-  },
-
-  /* ---
-   * Helper function to process chart data.
-   */
-  processChartData: function() {
-    this.labels = [];
-    this.dataset = [];
-
-    for (let value of this.chart.data.values) {
-      this.labels.push(value[0]);
-      this.dataset.push(value[1]);
-    }
   },
 
   /* ---
@@ -54,7 +38,6 @@ var pfBarChart = {
       case 'vertical':
         break;
     }
-
   },
 
   /* ---
@@ -63,7 +46,7 @@ var pfBarChart = {
   createBars: function() {
     switch (this.orientation) {
       case 'horizontal':
-        return this.svg.selectAll('rect').data(this.dataset).enter().append('rect')
+        return this.svg.selectAll('rect').data(this.chart.data.counts).enter().append('rect')
                        .attr('height', this.config.barThickness)
                        .attr('width',  (d) => { return this.getBarSize(d) + '%'; })
                        .attr('x',      this.config.labelWidth)
@@ -78,7 +61,7 @@ var pfBarChart = {
    * Helper function to create bar chart labels.
    */
   createLabels: function() {
-    return this.svg.selectAll('text').data(this.labels).enter().append('text')
+    return this.svg.selectAll('text').data(this.chart.data.labels).enter().append('text')
                    .text(function(d) { return d; })
                    .attr('height', this.config.barThickness)
                    .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
@@ -91,9 +74,9 @@ var pfBarChart = {
   getSvgDimensions: function() {
     if (this.orientation == 'horizontal') {
       // SVG width is the largest value in the dataset.
-      this.width = Math.max(...this.dataset);
+      this.width = Math.max(...this.chart.data.counts);
       // SVG height is based on number of values in dataset.
-      this.height = this.dataset.length * (this.config.barThickness + this.config.barGutter);
+      this.height = this.chart.data.counts.length * (this.config.barThickness + this.config.barGutter);
 
     } else if (this.orientation == 'vertical') {
     }
