@@ -74,10 +74,10 @@ var pfBarChart = {
                        .attr('fill',   'blue');
       case 'vertical':
         return this.svg.selectAll('rect').data(this.dataset).enter().append('rect')
-                       .attr('width',  this.config.barThickness)
                        .attr('height', (d) => { return this.getBarSize(d) + '%'; })
-                       .attr('y',      (d) => { return this.getVerticalBarBase(d); })
+                       .attr('width',  this.config.barThickness)
                        .attr('x',      (d, i) => { return this.getBarLocation(i); })
+                       .attr('y',      (d) => { return this.getVerticalBarBase(d); })
                        .attr('fill',   'blue');
     }
   },
