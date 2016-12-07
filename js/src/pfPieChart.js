@@ -13,6 +13,7 @@ var pfPieChart = {
 
     this.createSvg();
     this.createPie();
+    this.createLabels();
   },
 
   /* ---
@@ -44,6 +45,27 @@ var pfPieChart = {
             .append('path')
             .attr('d', arc)
             .attr('fill', (d) => { return this.chart.colors[d.index]; });
+  },
+
+  /* ---
+   * Helper function that creates chart labels
+   */
+  createLabels: function() {
+    let html = '',
+        total = this.chart.data.counts.reduce((sum, current) => { return sum + parseInt(current) }, 0);
+
+    for (let i=0; i<this.chart.data.labels.length; i++) {
+      let color = this.chart.colors[i],
+          label = this.chart.data.labels[i],
+          count = Math.round(this.chart.data.counts[i] / total * 100);
+          
+      html += `<p>
+                 <span class="legend" style="background: ${color}"></span>
+                 ${label} (${count}%)
+               </p>`;
+    }
+
+    $(this.chart.el).append(html);
   }
 
 }
