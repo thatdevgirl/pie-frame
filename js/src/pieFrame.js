@@ -39,8 +39,10 @@ var pieFrame = {
       hue:       $(c).attr('data-hue')
     };
 
-    $(c).replaceWith($('<div class="chart" data-id="' + chart.id + '"></div>'));
-    chart.el = $('div[data-id=' + chart.id + ']')[0];
+    let rand = Math.floor(Math.random() * 1000) + '';
+
+    $(c).replaceWith($('<div class="chart" data-id="' + chart.id + '" id="chart-' + rand + '"></div>'));
+    chart.el = $('div#chart-' + rand)[0];
 
     return chart;
   },

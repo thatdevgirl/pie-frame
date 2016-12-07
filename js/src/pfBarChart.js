@@ -4,9 +4,9 @@ var pfBarChart = {
    * Chart configuration values
    */
   config: {
-    barThickness:   25,  // thickness of individual bars
+    barThickness:   40,  // thickness of individual bars
     barGutter:      8,   // space between bars
-    labelWidth:     100, // label width
+    labelWidth:     120, // label width
     labelHeight:    100, // label height
     labelBaseline:  20,  // label text baseline
     labelColor:     'black'
@@ -23,6 +23,7 @@ var pfBarChart = {
     this.createSvg();
     this.createBars();
     this.createLabels();
+    this.createCounts();
   },
 
   /* ---
@@ -61,11 +62,24 @@ var pfBarChart = {
    * Helper function to create bar chart labels.
    */
   createLabels: function() {
-    return this.svg.selectAll('text').data(this.chart.data.labels).enter().append('text')
+    return this.svg.selectAll('g').enter().data(this.chart.data.labels).enter().append('text')
                    .text(function(d) { return d; })
                    .attr('height', this.config.barThickness)
                    .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
                    .attr('fill',   this.config.labelColor);
+  },
+
+  /* ---
+   * Helper function to display bar chart counts.
+   */
+  createCounts: function() {
+    return this.svg.selectAll('g').data(this.chart.data.counts).enter().append('text')
+                   .text(function(d) { return d; })
+                   .attr('height', this.config.barThickness)
+                   .attr('x',      this.config.labelWidth + this.config.barGutter)
+                   .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
+                   .attr('fill',   this.config.labelColor);
+
   },
 
   /* ---
@@ -92,8 +106,8 @@ var pfBarChart = {
   /* ---
    * Helper function that returns the location of the bar based on passed-in iterator.
    */
-  getBarLocation: function(i, offset=0) {
-    return i * this.config.barThickness + i * this.config.barGutter + offset;
+  getBarLocation: function(i, offset=-7) {
+    return (i * this.config.barThickness) + (i * this.config.barGutter) + offset;
   },
 
   /* ---
