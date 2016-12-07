@@ -1,3 +1,7 @@
+.chart {
+  margin-bottom: 2rem;
+}
+
 .chart p {
   height: 20px;
   background: yellow;
