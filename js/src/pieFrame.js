@@ -17,9 +17,10 @@ var pieFrame = {
       $.ajax(url, {
         success: (data) => {
           chart.data = this.processData(data);
+          chart.colors = this.generateColors(chart);
           this.displayChart(chart);
         },
-        error:   (xhr)  => { console.log(xhr); return false; }
+        error: (xhr)  => { console.log(xhr); return false; }
       });
     }
   },
@@ -32,8 +33,10 @@ var pieFrame = {
    */
   getChartInfo: function(c) {
     let chart = {
-      id:   $(c).attr('data-id'),
-      type: $(c).attr('data-type')
+      id:        $(c).attr('data-id'),
+      type:      $(c).attr('data-type'),
+      colorseed: $(c).attr('data-colorseed'),
+      hue:       $(c).attr('data-hue')
     };
 
     $(c).replaceWith($('<div class="chart" data-id="' + chart.id + '"></div>'));
@@ -65,6 +68,24 @@ var pieFrame = {
   },
 
   /* ---
+   * Function that generates an array of colors for the chart
+   */
+  generateColors: function(chart) {
+    let count = chart.data.counts.length;
+    let attrs = { count: count };
+
+    if (chart.colorseed) {
+      attrs.seed = chart.colorseed;
+    };
+
+    if (chart.hue) {
+      attrs.hue = chart.hue;
+    };
+
+    return randomColor(attrs);
+  },
+
+  /* ---
    * Function that calls the correct function to display cart.
    */
   displayChart: function(chart) {
@@ -80,7 +101,6 @@ var pieFrame = {
         break;
     }
   }
-
 };
 
 $(document).ready(function() {

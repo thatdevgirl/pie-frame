@@ -51,7 +51,7 @@ var pfBarChart = {
                        .attr('width',  (d) => { return this.getBarSize(d) + '%'; })
                        .attr('x',      this.config.labelWidth)
                        .attr('y',      (d, i) => { return this.getBarLocation(i); })
-                       .attr('fill',   'blue');
+                       .attr('fill',   (d, i) => { return this.chart.colors[i] });
       case 'vertical':
         return false;
     }

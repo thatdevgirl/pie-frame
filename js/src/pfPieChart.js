@@ -43,9 +43,7 @@ var pfPieChart = {
             .enter()
             .append('path')
             .attr('d', arc)
-            .attr('fill', function(d) {
-              //return color(d.data.chart.data.labels)
-            });
+            .attr('fill', (d) => { return this.chart.colors[d.index]; });
   }
 
 }
