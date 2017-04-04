@@ -100,6 +100,8 @@ var pfBarChart = {
    * Helper function that returns the size of the bar based on passed-in data.
    */
   getBarSize: function(d) {
+    if (!this.width) { return 0; }
+    
     return (d / this.width * 100);
   },
 
