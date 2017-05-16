@@ -28,7 +28,9 @@ The library relies on a new HTML-like tag called `<chart>`.  This tag will be re
   </head>
 
   <body>
-    <chart data-id="GOOGLE-SHEET-ID" data-type="TYPE-OF-CHART"></chart>
+    <chart data-id="GOOGLE-SHEET-ID" data-type="TYPE-OF-CHART">
+      A short description of your chart.
+    </chart>
 
     <script src="js/pieFrame-vendor.min.js"></script>
     <script src="js/pieFrame.min.js"></script>

@@ -21,9 +21,15 @@ var pfBarChart = {
 
     this.getSvgDimensions();
     this.createSvg();
-    this.createBars();
-    this.createLabels();
-    this.createCounts();
+
+    switch (this.orientation) {
+      case 'horizontal':
+        this.createHorizontalChart();
+        break;
+      case 'vertical':
+        this.createVerticalChart();
+        break;
+    }
   },
 
   /* ---
@@ -35,6 +41,7 @@ var pfBarChart = {
         this.svg = d3.select(this.chart.el).append('svg')
                      .attr('width', '100%')
                      .attr('height', this.height);
+        this.svg.append('desc').text(this.chart.desc);
         break;
       case 'vertical':
         break;
@@ -42,44 +49,48 @@ var pfBarChart = {
   },
 
   /* ---
-   * Helper function to create bar chart bars
+   * Helper function to create horizontal bar chart
    */
-  createBars: function() {
-    switch (this.orientation) {
-      case 'horizontal':
-        return this.svg.selectAll('rect').data(this.chart.data.counts).enter().append('rect')
-                       .attr('height', this.config.barThickness)
-                       .attr('width',  (d) => { return this.getBarSize(d) + '%'; })
-                       .attr('x',      this.config.labelWidth)
-                       .attr('y',      (d, i) => { return this.getBarLocation(i); })
-                       .attr('fill',   (d, i) => { return this.chart.colors[i] });
-      case 'vertical':
-        return false;
-    }
+  createHorizontalChart: function() {
+    let groups = this.svg.selectAll('g').data(this.chart.data.counts).enter().append('g');
+
+    groups.append('title')
+      .text((d, i) => { return 'Data for ' + this.chart.data.labels[i]; });
+
+    groups.append('desc')
+      .text((d, i) => { return 'The number of ' + this.chart.data.labels[i] + ' is ' + d + ', which is ' + this.getBarSize(d) + '% of the total.'});
+
+    // Draw the bars.
+    groups.append('rect')
+      .attr('height', this.config.barThickness)
+      .attr('width',  (d) => { return this.getBarSize(d) + '%'; })
+      .attr('x',      this.config.labelWidth)
+      .attr('y',      (d, i) => { return this.getBarLocation(i); })
+      .attr('fill',   (d, i) => { return this.chart.colors[i] });
+
+    // Draw the chart labels.
+    groups.append('text')
+      .text((d, i) => { return this.chart.data.labels[i]; })
+      .attr('height', this.config.barThickness)
+      .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
+      .attr('fill',   this.config.labelColor);
+
+    // Draw the counter text on top of the bars.
+    groups.append('text')
+      .text((d) => { return d; })
+      .attr('height', this.config.barThickness)
+      .attr('x',      this.config.labelWidth + this.config.barGutter)
+      .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
+      .attr('fill',   this.config.labelColor);
+
+    return groups;
   },
 
   /* ---
-   * Helper function to create bar chart labels.
+   * Helper function to create vertical bar chart
    */
-  createLabels: function() {
-    return this.svg.selectAll('g').enter().data(this.chart.data.labels).enter().append('text')
-                   .text(function(d) { return d; })
-                   .attr('height', this.config.barThickness)
-                   .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
-                   .attr('fill',   this.config.labelColor);
-  },
-
-  /* ---
-   * Helper function to display bar chart counts.
-   */
-  createCounts: function() {
-    return this.svg.selectAll('g').data(this.chart.data.counts).enter().append('text')
-                   .text(function(d) { return d; })
-                   .attr('height', this.config.barThickness)
-                   .attr('x',      this.config.labelWidth + this.config.barGutter)
-                   .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
-                   .attr('fill',   this.config.labelColor);
-
+  createVerticalChart: function() {
+    return false;
   },
 
   /* ---
@@ -101,7 +112,7 @@ var pfBarChart = {
    */
   getBarSize: function(d) {
     if (!this.width) { return 0; }
-    
+
     return (d / this.width * 100);
   },
 

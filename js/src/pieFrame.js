@@ -36,7 +36,8 @@ var pieFrame = {
       id:        $(c).attr('data-id'),
       type:      $(c).attr('data-type'),
       colorseed: $(c).attr('data-colorseed'),
-      hue:       $(c).attr('data-hue')
+      hue:       $(c).attr('data-hue'),
+      desc:      $(c).html()
     };
 
     let rand = Math.floor(Math.random() * 1000) + '';
