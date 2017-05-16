@@ -5,16 +5,15 @@
   "author": "Joni Halabi <her@thatdevgirl.com>",
   "license": "MIT",
 
-  "dependencies": {
-    "gulp": "*",
-    "gulp-concat": "*",
-    "gulp-uglify": "*",
-    "gulp-babel": "*",
-    "gulp-watch": "*",
-    "babel-preset-es2015": "*",
-
-    "jquery": "*",
-    "d3": "*",
-    "randomcolor": "*"
+  "devDependencies": {
+    "gulp": "latest",
+    "gulp-concat": "latest",
+    "gulp-uglify": "latest",
+    "gulp-babel": "latest",
+    "gulp-watch": "latest",
+    "babel-preset-es2015": "latest",
+    "jquery": "latest",
+    "d3": "latest",
+    "randomcolor": "latest"
   }
 }
