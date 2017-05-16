@@ -41,11 +41,12 @@ var pfBarChart = {
         this.svg = d3.select(this.chart.el).append('svg')
                      .attr('width', '100%')
                      .attr('height', this.height);
-        this.svg.append('desc').text(this.chart.desc);
         break;
       case 'vertical':
         break;
     }
+
+    this.svg.append('desc').text(this.chart.desc);
   },
 
   /* ---
