@@ -4,13 +4,14 @@ var pfBarChart = {
    * Chart configuration values
    */
   config: {
-    barThickness:   40,  // thickness of individual bars
-    barGutter:      8,   // space between bars
-    labelWidth:     120, // label width
-    labelHeight:    100, // label height
-    labelBaseline:  20,  // label text baseline
+    barThickness:   40,      // thickness of individual bars
+    barGutter:      8,       // space between bars
+    labelWidth:     120,     // label width
+    labelHeight:    100,     // label height
+    labelBaseline:  20,      // label text baseline
     labelColor:     'black', // text color for bar labels
-    countColor:     'white'  // text color for bar count text
+    countColor:     'white', // text color for bar count text
+    chartHeight:    500      // set height for vertical bar charts
   },
 
   /* ---
@@ -25,10 +26,10 @@ var pfBarChart = {
 
     switch (this.orientation) {
       case 'horizontal':
-        this.createHorizontalChart();
+        pfHorizonal.create();
         break;
       case 'vertical':
-        this.createVerticalChart();
+        pfVertical.create();
         break;
     }
   },
@@ -37,15 +38,9 @@ var pfBarChart = {
    * Helper function that returns the base SVG object
    */
   createSvg: function() {
-    switch (this.orientation) {
-      case 'horizontal':
-        this.svg = d3.select(this.chart.el).append('svg')
-                     .attr('width', '100%')
-                     .attr('height', this.height);
-        break;
-      case 'vertical':
-        break;
-    }
+    this.svg = d3.select(this.chart.el).append('svg')
+                 .attr('width', '100%')
+                 .attr('height', this.height);
 
     if (this.chart.desc) {
       this.svg.append('desc').text(this.chart.desc);
@@ -53,61 +48,35 @@ var pfBarChart = {
   },
 
   /* ---
-   * Helper function to create horizontal bar chart
+   * Helper function for initial chart setup.
    */
-  createHorizontalChart: function() {
-    let groups = this.svg.selectAll('g').data(this.chart.data.counts).enter().append('g');
+  createBase: function() {
+    let base = this.svg.selectAll('g').data(this.chart.data.counts).enter().append('g');
 
-    groups.append('title')
+    base.append('title')
       .text((d, i) => { return 'Data for ' + this.chart.data.labels[i]; });
 
-    groups.append('desc')
+    base.append('desc')
       .text((d, i) => { return 'The number of ' + this.chart.data.labels[i] + ' is ' + d + ', which is ' + this.getBarSize(d) + '% of the total.'});
 
-    // Draw the bars.
-    groups.append('rect')
-      .attr('height', this.config.barThickness)
-      .attr('width',  (d) => { return this.getBarSize(d) + '%'; })
-      .attr('x',      this.config.labelWidth)
-      .attr('y',      (d, i) => { return this.getBarLocation(i); })
-      .attr('fill',   (d, i) => { return this.chart.colors[i] });
-
-    // Draw the chart labels.
-    groups.append('text')
-      .text((d, i) => { return this.chart.data.labels[i]; })
-      .attr('height', this.config.barThickness)
-      .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
-      .attr('fill',   this.config.labelColor);
-
-    // Draw the counter text on top of the bars.
-    groups.append('text')
-      .text((d) => { return d; })
-      .attr('height', this.config.barThickness)
-      .attr('x',      this.config.labelWidth + this.config.barGutter)
-      .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
-      .attr('fill',   this.config.countColor);
-
-    return groups;
-  },
-
-  /* ---
-   * Helper function to create vertical bar chart
-   */
-  createVerticalChart: function() {
-    return false;
+    return base;
   },
 
   /* ---
    * Helper function to determine width and height of SVG based on chart orientation.
    */
   getSvgDimensions: function() {
+    // SVG max size is the largest value in the dataset.
+    //   Used for width in horizonal charts; bar height in vertical charts.
+    this.maxSize = Math.max(...this.chart.data.counts);
+
     if (this.orientation == 'horizontal') {
-      // SVG width is the largest value in the dataset.
-      this.width = Math.max(...this.chart.data.counts);
-      // SVG height is based on number of values in dataset.
+      // Based on number of values in dataset for horizontal charts.
       this.height = this.chart.data.counts.length * (this.config.barThickness + this.config.barGutter);
 
     } else if (this.orientation == 'vertical') {
+      // Fixed height for vertical charts.
+      this.height = this.config.chartHeight;
     }
   },
 
@@ -115,23 +84,112 @@ var pfBarChart = {
    * Helper function that returns the size of the bar based on passed-in data.
    */
   getBarSize: function(d) {
-    if (!this.width) { return 0; }
+    if (!this.maxSize) { return 0; }
+    return (d / this.maxSize * 100);
+  }
+}
 
-    return (d / this.width * 100);
+
+/* ******************************
+ * Namespace for helper functions for HORIZONTAL bar charts only.
+ */
+var pfHorizonal = {
+
+  /* ---
+   * Displays the chart!
+   */
+  create: function() {
+    let chart = pfBarChart.createBase();
+
+    // Draw the bars.
+    chart.append('rect')
+      .attr('height', pfBarChart.config.barThickness)
+      .attr('width',  (d) => { return pfBarChart.getBarSize(d) + '%'; })
+      .attr('x',      pfBarChart.config.labelWidth)
+      .attr('y',      (d, i) => { return this.barY(i); })
+      .attr('fill',   (d, i) => { return pfBarChart.chart.colors[i] });
+
+    // Draw the chart labels.
+    chart.append('text')
+      .text((d, i) => { return pfBarChart.chart.data.labels[i]; })
+      .attr('height', pfBarChart.config.barThickness)
+      .attr('y',      (d, i) => { return this.barY(i, pfBarChart.config.labelBaseline); })
+      .attr('fill',   pfBarChart.config.labelColor);
+
+    // Draw the counter text on top of the bars.
+    chart.append('text')
+      .text((d) => { return d; })
+      .attr('height', pfBarChart.config.barThickness)
+      .attr('x',      pfBarChart.config.labelWidth + pfBarChart.config.barGutter)
+      .attr('y',      (d, i) => { return this.barY(i, pfBarChart.config.labelBaseline); })
+      .attr('fill',   pfBarChart.config.countColor);
+
+    return chart;
   },
 
   /* ---
-   * Helper function that returns the location of the bar based on passed-in iterator.
+   * Returns the y value (as px) of the bar, based on iterator.
    */
-  getBarLocation: function(i, offset=-7) {
-    return (i * this.config.barThickness) + (i * this.config.barGutter) + offset;
+  barY: function(i, offset=-7) {
+    return (i * pfBarChart.config.barThickness) + (i * pfBarChart.config.barGutter) + offset;
+  }
+
+};
+
+
+/* ******************************
+ * Namespace for helper functions for VERTICAL bar charts only.
+ */
+var pfVertical = {
+
+  /* ---
+   * Displays the chart!
+   */
+  create: function() {
+    let chart = pfBarChart.createBase();
+
+    // Draw the bars.
+    chart.append('rect')
+      .attr('height', (d) => { return this.barHeight(d) + 'px'; })
+      .attr('width',  () => { return this.barWidth() + '%'; })
+      .attr('x',      (d, i) => { return this.barX(i) + '%'; })
+      .attr('y',      (d) => { return this.barY(d); })
+      .attr('fill',   (d, i) => { return pfBarChart.chart.colors[i] });
+
+    return chart;
   },
 
   /* ---
-   * Helper function that determines the baseline of the bar for a vertical bar chart.
+   * Returns the height (as px) of the bar.
    */
-  getVerticalBarBase: function(d) {
-    return this.height - this.getBarSize(d) / 100 * this.height + this.labelHeight;
+  barHeight: function(d) {
+    let size = pfBarChart.getBarSize(d);
+    let chartHeight = pfBarChart.config.chartHeight - pfBarChart.config.labelWidth;
+    return (size / 100 * chartHeight);
+  },
+
+  /* ---
+   * Returns the width (as %) of the bar.
+   */
+  barWidth: function() {
+    let gutters = pfBarChart.chart.data.counts.length;
+    return ((100 - gutters) / pfBarChart.chart.data.counts.length);
+  },
+
+  /* ---
+   * Returns the y value (as px) of the bar.
+   */
+  barY: function(d) {
+    let height = this.barHeight(d);
+    let chartHeight = pfBarChart.config.chartHeight - pfBarChart.config.labelWidth;
+    return chartHeight - height;
+  },
+
+  /* ---
+   * Returns the x value (as %) of the bar, based on iterator.
+   */
+  barX: function(i) {
+    return (i * (this.barWidth() + 1));
   }
 
 };
