@@ -85,6 +85,11 @@ var pieFrame = {
       attrs.hue = chart.hue;
     };
 
+    // We want darker colors for bar charts for contrast reasons.
+    if (chart.type == 'horizontal-bar' || chart.type == 'vertical-bar') {
+      attrs.luminosity = 'dark';
+    }
+
     return randomColor(attrs);
   },
 

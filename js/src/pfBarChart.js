@@ -9,7 +9,8 @@ var pfBarChart = {
     labelWidth:     120, // label width
     labelHeight:    100, // label height
     labelBaseline:  20,  // label text baseline
-    labelColor:     'black'
+    labelColor:     'black', // text color for bar labels
+    countColor:     'white'  // text color for bar count text
   },
 
   /* ---
@@ -84,7 +85,7 @@ var pfBarChart = {
       .attr('height', this.config.barThickness)
       .attr('x',      this.config.labelWidth + this.config.barGutter)
       .attr('y',      (d, i) => { return this.getBarLocation(i, this.config.labelBaseline); })
-      .attr('fill',   this.config.labelColor);
+      .attr('fill',   this.config.countColor);
 
     return groups;
   },
