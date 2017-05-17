@@ -12,16 +12,27 @@ var vendorFiles = [
   'node_modules/randomcolor/randomcolor.js'
 ];
 
+var guVendorFiles = [
+  'node_modules/d3/build/d3.min.js',
+  'node_modules/randomcolor/randomcolor.js'
+];
+
 var jsFiles = [
   'js/src/pieFrame.js',
   'js/src/pfBarChart.js',
   'js/src/pfPieChart.js'
  ];
 
-// Task to concatinate required vendor JS files.
+// Tasks to concatinate required vendor JS files.
 gulp.task('vendor', function() {
   return gulp.src(vendorFiles)
     .pipe(concat('pieFrame-vendor.min.js'))
+    .pipe(gulp.dest('js'));
+});
+
+gulp.task('vendor-gu', function() {
+  return gulp.src(guVendorFiles)
+    .pipe(concat('pieFrame-vendor-gu.min.js'))
     .pipe(gulp.dest('js'));
 });
 
@@ -40,4 +51,4 @@ gulp.task('watch', function() {
 });
 
 // Default task
-gulp.task('default', ['vendor', 'js', 'watch']);
+gulp.task('default', ['vendor', 'vendor-gu', 'js', 'watch']);
