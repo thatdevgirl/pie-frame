@@ -23,6 +23,10 @@ var pfPieChart = {
     this.svg = d3.select(this.chart.el).append('svg')
                  .attr('width', this.config.size)
                  .attr('height', this.config.size);
+
+    if (this.chart.desc) {
+      this.svg.append('desc').text(this.chart.desc);
+    }
   },
 
   /* ---
@@ -58,7 +62,7 @@ var pfPieChart = {
       let color = this.chart.colors[i],
           label = this.chart.data.labels[i],
           count = Math.round(this.chart.data.counts[i] / total * 100);
-          
+
       html += `<p>
                  <span class="legend" style="background: ${color}"></span>
                  ${label} (${count}%)

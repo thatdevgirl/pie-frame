@@ -46,7 +46,9 @@ var pfBarChart = {
         break;
     }
 
-    this.svg.append('desc').text(this.chart.desc);
+    if (this.chart.desc) {
+      this.svg.append('desc').text(this.chart.desc);
+    }
   },
 
   /* ---
