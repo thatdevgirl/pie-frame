@@ -7,7 +7,7 @@ var pfBarChart = {
     barThickness:   40,      // thickness of individual bars
     barGutter:      8,       // space between bars
     labelWidth:     120,     // label width
-    labelHeight:    100,     // label height
+    labelHeight:    50,      // label height
     labelBaseline:  20,      // label text baseline
     labelColor:     'black', // text color for bar labels
     countColor:     'white', // text color for bar count text
@@ -148,6 +148,11 @@ var pfVertical = {
   create: function() {
     let chart = pfBarChart.createBase();
 
+    let y = d3.scaleLinear().range([pfBarChart.config.chartHeight - pfBarChart.config.labelHeight, 0]);
+    chart.attr('transform', 'translate(40,10)');
+    chart.call(d3.axisLeft(y));
+
+
     // Draw the bars.
     chart.append('rect')
       .attr('height', (d) => { return this.barHeight(d) + 'px'; })
@@ -155,6 +160,15 @@ var pfVertical = {
       .attr('x',      (d, i) => { return this.barX(i) + '%'; })
       .attr('y',      (d) => { return this.barY(d); })
       .attr('fill',   (d, i) => { return pfBarChart.chart.colors[i] });
+
+    // Draw the chart labels.
+    chart.append('text')
+      .text((d, i) => { return pfBarChart.chart.data.labels[i]; })
+      .attr('height', pfBarChart.config.barThickness)
+      .attr('transform', 'translate(60,0)')
+      .attr('x',      (d, i) => { return this.barX(i) + '%'; })
+      .attr('y',      pfBarChart.config.chartHeight - pfBarChart.config.labelHeight/2)
+      .attr('fill',   pfBarChart.config.labelColor);
 
     return chart;
   },
@@ -164,7 +178,7 @@ var pfVertical = {
    */
   barHeight: function(d) {
     let size = pfBarChart.getBarSize(d);
-    let chartHeight = pfBarChart.config.chartHeight - pfBarChart.config.labelWidth;
+    let chartHeight = pfBarChart.config.chartHeight - pfBarChart.config.labelHeight;
     return (size / 100 * chartHeight);
   },
 
@@ -181,7 +195,7 @@ var pfVertical = {
    */
   barY: function(d) {
     let height = this.barHeight(d);
-    let chartHeight = pfBarChart.config.chartHeight - pfBarChart.config.labelWidth;
+    let chartHeight = pfBarChart.config.chartHeight - pfBarChart.config.labelHeight;
     return chartHeight - height;
   },
 
