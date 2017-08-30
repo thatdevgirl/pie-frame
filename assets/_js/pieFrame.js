@@ -1,4 +1,4 @@
-import PFPie from './classes/pie';
+import PFPie from './base/pie';
 
 var pieFrame = {
 

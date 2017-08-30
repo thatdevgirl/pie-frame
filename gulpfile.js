@@ -37,7 +37,7 @@ gulp.task('js', () => {
 
 // Watcher task for JS files.
 gulp.task('watch', function() {
-  gulp.watch('js/*/*.js', ['js']);
+  gulp.watch('assets/_js/**/*.js', ['js']);
 });
 
 // Default task
