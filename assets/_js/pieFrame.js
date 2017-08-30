@@ -1,4 +1,5 @@
 import PFPie from './base/pie';
+import PFBarHorizontal from './components/bar-horizontal';
 
 var pieFrame = {
 
@@ -101,7 +102,8 @@ var pieFrame = {
   displayChart: function(chart) {
     switch(chart.type) {
       case 'horizontal-bar':
-        pfBarChart.display(chart, 'horizontal');
+        const pfBarHorizontal = new PFBarHorizontal();
+        pfBarHorizontal.display(chart, 'horizontal');
         break;
       case 'vertical-bar':
         pfBarChart.display(chart, 'vertical');
