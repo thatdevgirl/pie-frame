@@ -24,7 +24,7 @@ The library relies on a new HTML-like tag called `<chart>`.  This tag will be re
 ```
 <html>
   <head>
-    <link href="css/pieFrame.css" rel="stylesheet">
+    <link href="assets/css/pieFrame.css" rel="stylesheet">
   </head>
 
   <body>
@@ -32,8 +32,8 @@ The library relies on a new HTML-like tag called `<chart>`.  This tag will be re
       A short description of your chart.
     </chart>
 
-    <script src="js/pieFrame-vendor.min.js"></script>
-    <script src="js/pieFrame.min.js"></script>
+    <script src="assets/js/pieFrame-vendor.min.js"></script>
+    <script src="assets/js/pieFrame.min.js"></script>
   </body>
 </html>
 ```

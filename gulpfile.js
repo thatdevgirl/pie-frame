@@ -1,37 +1,38 @@
-// Gulp libraries
-var gulp   = require('gulp'),
-    concat = require('gulp-concat'),
-    uglify = require('gulp-uglify'),
-    babel  = require('gulp-babel'),
-    watch  = require('gulp-watch');
+const gulp = require('gulp'),
+      browserify = require('browserify'),
+      babelify = require('babelify'),
+      concat = require('gulp-concat'),
+      source = require('vinyl-source-stream'),
+      streamify = require('gulp-streamify'),
+      uglify = require('gulp-uglify'),
+      watch = require('gulp-watch');
 
 // Array of JS files, in order by dependency.
-var vendorFiles = [
+const vendorFiles = [
   'node_modules/jquery/dist/jquery.min.js',
   'node_modules/d3/build/d3.min.js',
   'node_modules/randomcolor/randomcolor.js'
 ];
 
-var jsFiles = [
-  'js/src/pieFrame.js',
-  'js/src/pfBarChart.js',
-  'js/src/pfPieChart.js'
- ];
-
 // Tasks to concatinate required vendor JS files.
 gulp.task('vendor', function() {
   return gulp.src(vendorFiles)
     .pipe(concat('pieFrame-vendor.min.js'))
-    .pipe(gulp.dest('js'));
+    .pipe(gulp.dest('./assets/js'));
 });
 
-// Task to concatinate and minify custom JS files.
-gulp.task('js', function() {
-  return gulp.src(jsFiles)
-    .pipe(babel({presets: ['es2015']}))
-    .pipe(concat('pieFrame.min.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest('js'));
+gulp.task('js', () => {
+	browserify({
+    	entries: './assets/_js/pieFrame.js',
+    	debug: true
+  	})
+    .transform(babelify.configure({
+      presets: ["es2015"]
+    }))
+    .bundle()
+    .pipe(source('pieFrame.min.js'))
+    .pipe(streamify(uglify()))
+    .pipe(gulp.dest('./assets/js'));
 });
 
 // Watcher task for JS files.

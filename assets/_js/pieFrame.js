@@ -1,3 +1,5 @@
+import PFPie from './classes/pie';
+
 var pieFrame = {
 
   // --- Google API information
@@ -105,7 +107,8 @@ var pieFrame = {
         pfBarChart.display(chart, 'vertical');
         break;
       case 'pie':
-        pfPieChart.display(chart);
+        const pfPie = new PFPie();
+        pfPie.display(chart);
         break;
     }
   }
