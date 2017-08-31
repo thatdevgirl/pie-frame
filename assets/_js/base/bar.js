@@ -15,28 +15,9 @@ class PFBar {
    */
   display(chart, height) {
     this.chart = chart;
-    this.maxSize = Math.max(...this.chart.data.counts);
-
     this.createSvg(height);
+    return this.createBase();
   }
-
-  // /* ---
-  //  * Helper: Determines width and height of SVG based on chart orientation.
-  //  */
-  // getSvgDimensions() {
-  //   // SVG max size is the largest value in the dataset.
-  //   //   Used for width in horizonal charts; bar height in vertical charts.
-  //   this.maxSize = Math.max(...this.chart.data.counts);
-  //
-  //   if (this.orientation == 'horizontal') {
-  //     // Based on number of values in dataset for horizontal charts.
-  //     this.height = this.chart.data.counts.length * (this.barThickness + this.barGutter);
-  //
-  //   } else if (this.orientation == 'vertical') {
-  //     // Fixed height for vertical charts.
-  //     this.height = this.chartHeight;
-  //   }
-  // }
 
   /* ---
    * Helper: Returns the base SVG object.
@@ -68,8 +49,8 @@ class PFBar {
    * Helper: Returns the size of the bar based on passed-in data.
    */
   getBarSize(d) {
-    if (!this.maxSize) { return 0; }
-    return (d / this.maxSize * 100);
+    const maxSize = Math.max(...this.chart.data.counts);
+    return (!maxSize) ? 0 : (d / maxSize * 100);
   }
 }
 

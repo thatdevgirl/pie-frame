@@ -103,7 +103,7 @@ var pieFrame = {
     switch(chart.type) {
       case 'horizontal-bar':
         const pfBarHorizontal = new PFBarHorizontal();
-        pfBarHorizontal.display(chart, 'horizontal');
+        pfBarHorizontal.display(chart);
         break;
       case 'vertical-bar':
         pfBarChart.display(chart, 'vertical');
